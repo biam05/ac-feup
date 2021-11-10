@@ -122,7 +122,7 @@
         </list>
         <parameter key="keep_both_join_attributes" value="false"/>
       </operator>
-      <operator activated="true" breakpoints="after" class="concurrency:join" compatibility="9.8.001" expanded="true" height="82" name="Join (3)" width="90" x="715" y="391">
+      <operator activated="true" class="concurrency:join" compatibility="9.8.001" expanded="true" height="82" name="Join (3)" width="90" x="715" y="391">
         <parameter key="remove_double_attributes" value="true"/>
         <parameter key="join_type" value="right"/>
         <parameter key="use_id_attribute_as_key" value="false"/>
@@ -179,7 +179,7 @@
         <list key="columns"/>
         <parameter key="replenishment_value" value="1"/>
       </operator>
-      <operator activated="true" class="append" compatibility="9.9.003" expanded="true" height="103" name="Append" width="90" x="1117" y="442">
+      <operator activated="true" breakpoints="after" class="append" compatibility="9.9.003" expanded="true" height="103" name="Append" width="90" x="1117" y="442">
         <parameter key="datamanagement" value="double_array"/>
         <parameter key="data_management" value="auto"/>
         <parameter key="merge_type" value="all"/>
@@ -212,7 +212,7 @@
           <parameter key="status" value="Predicted"/>
         </list>
       </operator>
-      <operator activated="true" class="write_csv" compatibility="9.9.003" expanded="true" height="82" name="Write CSV" width="90" x="1653" y="442">
+      <operator activated="true" breakpoints="before" class="write_csv" compatibility="9.9.003" expanded="true" height="82" name="Write CSV" width="90" x="1653" y="442">
         <parameter key="csv_file" value="C:/Users/Hugo/Desktop/ac-feup/csvs/average_salary.csv"/>
         <parameter key="column_separator" value=","/>
         <parameter key="write_attribute_names" value="true"/>

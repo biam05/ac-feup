@@ -76,7 +76,7 @@ def replace_null(df):
 # %%
 from sklearn import preprocessing
 
-def normalization(df,column):
+def encode_strings(df,column):
 
     copy = df.copy()
     encoder = preprocessing.LabelEncoder()

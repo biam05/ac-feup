@@ -37,7 +37,7 @@ def date_conversion_genders(df,column,dt_format = '%d-%m-%Y'):
     date = date.astype(str)                                      # Convert to string to add the century
     date = '19' + date                                           # Add the century value
 
-    ### Get the monts value with gender
+    ### Get the monts value with genderfrom sklearn import preprocessing
     lst = []
     for item in date:
         lst.append(item[4:6])
@@ -62,7 +62,14 @@ def date_conversion_genders(df,column,dt_format = '%d-%m-%Y'):
 
     return df_copy
 
+def normalization(df,column):
 
+    copy = df.copy()
+    encoder = preprocessing.LabelEncoder()
+    encoder.fit(copy[column].unique())
+    copy[column] = encoder.transform(copy[column])
+
+    return copy
 
      
 
@@ -97,3 +104,17 @@ def drop_null_rows(df,limit = 0.5):
     return df.loc[df.isnull().mean() < limit]
 
 
+from sklearn import preprocessing
+
+def normalization(df,column):
+
+    copy = df.copy()
+    encoder = preprocessing.LabelEncoder()
+    encoder.fit(copy[column].unique())
+    copy[column] = encoder.transform(copy[column])
+
+    return copy
+
+
+
+# %%

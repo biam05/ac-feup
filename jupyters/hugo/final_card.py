@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import utils
 
 ### Import the loans file
-def cleanup(test = false):
+def cleanup(test = False):
     na_values= ['None', '?',]
     
     

@@ -19,6 +19,11 @@ def cleanup():
     cols = cols[0:2] + cols[3:4] + cols[2:3]
     clients = clients[cols]
     
+    
     return clients
 
 
+
+# %%
+
+# %%

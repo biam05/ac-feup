@@ -13,7 +13,7 @@ import final_trans
 
 ### Get all dataframes
 
-account = final_account.cleanup()
+accounts = final_account.cleanup()
 card = final_card.cleanup()
 client = final_client.cleanup()
 districts = final_districts.cleanup()
@@ -23,4 +23,6 @@ trans = final_trans.cleanup()
 
 ### Merge everything with sequel queries
 
-pd.merge()
+loans.merge(accounts, left_on='account_id')
+
+print(loans)

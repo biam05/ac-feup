@@ -3,12 +3,6 @@ import pandas as pd
 
 ### Script Imports
 import utils
-import final_account
-import final_card
-import final_client
-import final_districts
-import final_loans
-import final_trans
 
 
 ### Get all dataframes

@@ -5,13 +5,6 @@ import pandasql as ps
 
 ### Script Imports
 import utils
-import final_account
-import final_card
-import final_client
-import final_districts
-import final_loans
-import final_trans
-
 
 ### Get all dataframes
 
@@ -83,16 +76,7 @@ def cleanup(test=False):
 # def df_normalize(df):
     
 
-def normalize_category(df):
-    
-    cp = df.copy()
-    columns = cp.columns
-    
-    for column in columns:
-        if(cp[column].dtypes != 'int64' and cp[column].dtypes != 'float64' and  cp[column].dtypes != 'int32' and  cp[column].dtypes != 'float32'):
-            cp = utils.normalization(cp,column)
-    
-    return cp
+
             
     
 

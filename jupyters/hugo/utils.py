@@ -2,42 +2,35 @@
 # To add a new markdown cell, type '# %% [markdown]'
 
 # %%
-# ### Required Imports
-# import pandas as pd
-# import numpy as np
-# import matplotlib.pyplot as plt
+### Import Modules
+from datetime import datetime
+from sklearn import preprocessing
+from scipy import stats
+import numpy as np
 
-
-# client = pd.read_csv('../../project/banking_data/client.csv', sep=';')
-# loan = pd.read_csv('../../project/banking_data/loan_train.csv', sep=';')
-
-# ### Testing date conversion
-# #client = date_conversion_genders(client,'birth_number')
-# #loan = date_conversion(loan,'date')
+### Import other script
+import utils
 
 
 # %%
 ### Convert numerical date to datetime formats
-from datetime import datetime
-
 def date_conversion(df,column,dt_format = '%d-%m-%Y'):
     df_copy = df.copy()
-    date = df_copy[column]                                                             # Get the actual column
-    date = date.astype(str)                                                            # Convert to string to add the century
-    date = '19' + date                                                                 # Add the century value
+    date = df_copy[column]                                                                        # Get the actual column
+    date = date.astype(str)                                                                       # Convert to string to add the century
+    date = '19' + date                                                                            # Add the century value
     df_copy[column] = date.apply(lambda x: (datetime.strptime(x,'%Y%m%d')).strftime(dt_format))   # Convert to the desired date format
 
     return df_copy
 
 
 def date_conversion_genders(df,column,dt_format = '%d-%m-%Y'):
-
     df_copy = df.copy()
     date = df_copy[column]                                            # Get the actual column
     date = date.astype(str)                                      # Convert to string to add the century
     date = '19' + date                                           # Add the century value
 
-    ### Get the monts value with genderfrom sklearn import preprocessing
+    ### Get the monts value with gender
     lst = []
     for item in date:
         lst.append(item[4:6])
@@ -62,36 +55,13 @@ def date_conversion_genders(df,column,dt_format = '%d-%m-%Y'):
 
     return df_copy
 
-def normalization(df,column):
-
-    copy = df.copy()
-    encoder = preprocessing.LabelEncoder()
-    encoder.fit(copy[column].unique())
-    copy[column] = encoder.transform(copy[column])
-
-    return copy
-
-     
-
 
 # %%
 def replace_null(df):
     return df.fillna(df.median())
-    
 
-
-# %%
-from sklearn import preprocessing
-
-def encode_strings(df,column):
-
-    copy = df.copy()
-    encoder = preprocessing.LabelEncoder()
-    encoder.fit(copy[column].unique())
-    copy[column] = encoder.transform(copy[column])
-
-    return copy
-    
+def replace_null_non_numeric(df,column):
+    return df[column].fillna(df[column].value_counts().idxmax())
 
 
 # %%
@@ -104,8 +74,8 @@ def drop_null_rows(df,limit = 0.5):
     return df.loc[df.isnull().mean() < limit]
 
 
-from sklearn import preprocessing
-
+# %%
+### Converts catergorical values to numerical
 def normalization(df,column):
 
     copy = df.copy()
@@ -115,6 +85,34 @@ def normalization(df,column):
 
     return copy
 
+### Applyes categorical normalization to all non int columns
+### TODO: Solve Problem with date colums not being converted 
+def normalize_category(df):
+    
+    cp = df.copy()
+    columns = cp.columns
+    
+    for column in columns:
+        if(cp[column].dtypes != 'int64' and cp[column].dtypes != 'float64' and  cp[column].dtypes != 'int32' and  cp[column].dtypes != 'float32'):
+            cp = utils.normalization(cp,column)
+    
+    return cp
+    
 
 
 # %%
+### Outlier removal using the z-score method
+def remove_outliers_zscore(df,column,factor = 3):
+    return df[(np.abs(stats.zscore(df[column])) < factor)]
+
+### Outlier removel according to percentile
+def remove_outliers_zscore(df,column):
+    lower_bound = df[column].quantile(.95)
+    upper_bound = df[column].quantile(.05)
+
+    return df[(df[column] > lower_bound) & (df[column] < upper_bound)]
+
+# def drop_outliers_std(df,column):
+    
+
+

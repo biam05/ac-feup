@@ -1,16 +1,13 @@
-# To add a new cell, type '# %%'
-# To add a new markdown cell, type '# %% [markdown]'
-
 # %%
 ### Import Modules
 from datetime import datetime
 from sklearn import preprocessing
 from scipy import stats
 import numpy as np
+from sklearn import metrics
 
 ### Import other script
 import utils
-
 
 # %%
 ### Convert numerical date to datetime formats
@@ -55,14 +52,12 @@ def date_conversion_genders(df,column,dt_format = '%d-%m-%Y'):
 
     return df_copy
 
-
 # %%
 def replace_null(df):
     return df.fillna(df.median())
 
 def replace_null_non_numeric(df,column):
     return df[column].fillna(df[column].value_counts().idxmax())
-
 
 # %%
 ### Drop columns with percentage of nulls that surpasses the provided limit
@@ -72,7 +67,6 @@ def drop_null_columns(df,limit = 0.7):
 ### Drop rows with percentage of nulls that surpasses the provided limit
 def drop_null_rows(df,limit = 0.5):
     return df.loc[df.isnull().mean() < limit]
-
 
 # %%
 ### Converts catergorical values to numerical
@@ -114,5 +108,10 @@ def remove_outliers_zscore(df,column):
 
 # def drop_outliers_std(df,column):
     
+
+# %%
+def get_auc(y_test,y_predicted):
+    fpr, tpr, _ = metrics.roc_curve(y_test, y_predicted,pos_label=-1)    
+    return metrics.auc(fpr, tpr)
 
 

@@ -6,9 +6,6 @@ from scipy import stats
 import numpy as np
 from sklearn import metrics
 
-### Import other script
-import utils
-
 # %%
 ### Convert numerical date to datetime formats
 def date_conversion(df,column,dt_format = '%d-%m-%Y'):
@@ -69,6 +66,7 @@ def drop_null_rows(df,limit = 0.5):
     return df.loc[df.isnull().mean() < limit]
 
 # %%
+
 ### Converts catergorical values to numerical
 def normalization(df,column):
 
@@ -88,7 +86,17 @@ def normalize_category(df):
     
     for column in columns:
         if(cp[column].dtypes != 'int64' and cp[column].dtypes != 'float64' and  cp[column].dtypes != 'int32' and  cp[column].dtypes != 'float32'):
-            cp = utils.normalization(cp,column)
+            cp = normalization(cp,column)
+    
+    return cp
+
+def min_max_scaler(df):
+    cp = df.copy()
+    columns = cp.columns
+    
+    for column in columns:
+        if(cp[column].dtypes != 'int64' and cp[column].dtypes != 'float64' and  cp[column].dtypes != 'int32' and  cp[column].dtypes != 'float32'):
+            cp = normalization(cp,column)
     
     return cp
     
@@ -110,8 +118,8 @@ def remove_outliers_zscore(df,column):
     
 
 # %%
-def get_auc(y_test,y_predicted):
-    fpr, tpr, _ = metrics.roc_curve(y_test, y_predicted,pos_label=-1)    
+def get_auc(y_test,y_predicted,label=-1):
+    fpr, tpr, _ = metrics.roc_curve(y_test, y_predicted,pos_label=label)    
     return metrics.auc(fpr, tpr)
 
 

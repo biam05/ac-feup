@@ -5,6 +5,7 @@ from sklearn import preprocessing
 from scipy import stats
 import numpy as np
 from sklearn import metrics
+import pandas as pd
 
 # %%
 ### Convert numerical date to datetime formats
@@ -119,7 +120,7 @@ def remove_outliers_zscore(df,column):
 
 # %%
 def get_auc(y_test,y_predicted,label=-1):
-    fpr, tpr, _ = metrics.roc_curve(y_test, y_predicted,pos_label=label)    
+    fpr, tpr, _ = metrics.roc_curve(pd.to_numeric(y_test), pd.to_numeric(y_predicted),pos_label=label)    
     return metrics.auc(fpr, tpr)
 
 

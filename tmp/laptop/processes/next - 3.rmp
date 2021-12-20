@@ -264,7 +264,7 @@
         <parameter key="invert_selection" value="true"/>
         <parameter key="include_special_attributes" value="false"/>
       </operator>
-      <operator activated="true" class="select_attributes" compatibility="9.9.003" expanded="true" height="82" name="Select Attributes (2)" width="90" x="1050" y="493">
+      <operator activated="true" class="select_attributes" compatibility="9.9.003" expanded="true" height="82" name="Select Attributes (2)" width="90" x="983" y="493">
         <parameter key="attribute_filter_type" value="subset"/>
         <parameter key="attribute" value=""/>
         <parameter key="attributes" value="account_id|client_id"/>
@@ -278,13 +278,29 @@
         <parameter key="invert_selection" value="true"/>
         <parameter key="include_special_attributes" value="false"/>
       </operator>
-      <operator activated="true" class="blending:set_role" compatibility="9.9.003" expanded="true" height="82" name="Set Role" width="90" x="1184" y="493">
+      <operator activated="true" class="numerical_to_binominal" compatibility="9.9.003" expanded="true" height="82" name="Numerical to Binominal" width="90" x="1117" y="493">
+        <parameter key="attribute_filter_type" value="subset"/>
+        <parameter key="attribute" value=""/>
+        <parameter key="attributes" value="status"/>
+        <parameter key="use_except_expression" value="false"/>
+        <parameter key="value_type" value="numeric"/>
+        <parameter key="use_value_type_exception" value="false"/>
+        <parameter key="except_value_type" value="real"/>
+        <parameter key="block_type" value="value_series"/>
+        <parameter key="use_block_type_exception" value="false"/>
+        <parameter key="except_block_type" value="value_series_end"/>
+        <parameter key="invert_selection" value="false"/>
+        <parameter key="include_special_attributes" value="false"/>
+        <parameter key="min" value="0.0"/>
+        <parameter key="max" value="0.0"/>
+      </operator>
+      <operator activated="true" class="blending:set_role" compatibility="9.9.003" expanded="true" height="82" name="Set Role" width="90" x="1251" y="391">
         <list key="set_roles">
           <parameter key="status" value="label"/>
           <parameter key="loan_id" value="id"/>
         </list>
       </operator>
-      <operator activated="true" class="concurrency:cross_validation" compatibility="9.9.003" expanded="true" height="145" name="Validation" width="90" x="1318" y="493">
+      <operator activated="true" class="concurrency:cross_validation" compatibility="9.9.003" expanded="true" height="145" name="Validation" width="90" x="1385" y="493">
         <parameter key="split_on_batch_attribute" value="false"/>
         <parameter key="leave_one_out" value="false"/>
         <parameter key="number_of_folds" value="10"/>
@@ -293,37 +309,23 @@
         <parameter key="local_random_seed" value="1992"/>
         <parameter key="enable_parallel_execution" value="true"/>
         <process expanded="true">
-          <operator activated="true" class="h2o:generalized_linear_model" compatibility="9.9.000" expanded="true" height="124" name="Generalized Linear Model" width="90" x="45" y="34">
-            <parameter key="family" value="AUTO"/>
-            <parameter key="link" value="family_default"/>
-            <parameter key="solver" value="AUTO"/>
-            <parameter key="reproducible" value="false"/>
-            <parameter key="maximum_number_of_threads" value="4"/>
-            <parameter key="use_regularization" value="true"/>
-            <parameter key="lambda_search" value="false"/>
-            <parameter key="number_of_lambdas" value="0"/>
-            <parameter key="lambda_min_ratio" value="0.0"/>
-            <parameter key="early_stopping" value="true"/>
-            <parameter key="stopping_rounds" value="3"/>
-            <parameter key="stopping_tolerance" value="0.001"/>
-            <parameter key="standardize" value="true"/>
-            <parameter key="non-negative_coefficients" value="false"/>
-            <parameter key="add_intercept" value="true"/>
-            <parameter key="compute_p-values" value="false"/>
-            <parameter key="remove_collinear_columns" value="false"/>
-            <parameter key="missing_values_handling" value="MeanImputation"/>
-            <parameter key="max_iterations" value="0"/>
-            <parameter key="specify_beta_constraints" value="false"/>
-            <list key="beta_constraints"/>
-            <parameter key="max_runtime_seconds" value="0"/>
-            <list key="expert_parameters"/>
+          <operator activated="true" class="concurrency:parallel_decision_tree" compatibility="9.9.003" expanded="true" height="103" name="Decision Tree" width="90" x="179" y="34">
+            <parameter key="criterion" value="gain_ratio"/>
+            <parameter key="maximal_depth" value="10"/>
+            <parameter key="apply_pruning" value="true"/>
+            <parameter key="confidence" value="0.1"/>
+            <parameter key="apply_prepruning" value="true"/>
+            <parameter key="minimal_gain" value="0.01"/>
+            <parameter key="minimal_leaf_size" value="2"/>
+            <parameter key="minimal_size_for_split" value="4"/>
+            <parameter key="number_of_prepruning_alternatives" value="3"/>
           </operator>
-          <connect from_port="training set" to_op="Generalized Linear Model" to_port="training set"/>
-          <connect from_op="Generalized Linear Model" from_port="model" to_port="model"/>
+          <connect from_port="training set" to_op="Decision Tree" to_port="training set"/>
+          <connect from_op="Decision Tree" from_port="model" to_port="model"/>
           <portSpacing port="source_training set" spacing="0"/>
           <portSpacing port="sink_model" spacing="0"/>
           <portSpacing port="sink_through 1" spacing="0"/>
-          <description align="left" color="green" colored="true" height="113" resized="true" width="284" x="33" y="190">Builds a model on the current training data set (90 % of the data by default, 10 times).&lt;br&gt;&lt;br&gt;Make sure that you only put numerical attributes into a linear regression!</description>
+          <description align="left" color="green" colored="true" height="113" resized="true" width="284" x="30" y="191">Builds a model on the current training data set (90 % of the data by default, 10 times).&lt;br&gt;&lt;br&gt;Make sure that you only put numerical attributes into a linear regression!</description>
         </process>
         <process expanded="true">
           <operator activated="true" class="apply_model" compatibility="9.9.003" expanded="true" height="82" name="Apply Model" width="90" x="45" y="34">
@@ -348,7 +350,7 @@
         </process>
         <description align="center" color="transparent" colored="false" width="126">A cross validation including a linear regression.</description>
       </operator>
-      <operator activated="true" class="apply_model" compatibility="9.9.003" expanded="true" height="82" name="Apply Model (2)" width="90" x="1452" y="595">
+      <operator activated="true" class="apply_model" compatibility="9.9.003" expanded="true" height="82" name="Apply Model (2)" width="90" x="1519" y="595">
         <list key="application_parameters"/>
         <parameter key="create_view" value="false"/>
       </operator>
@@ -379,7 +381,8 @@
       <connect from_op="Select Attributes (11)" from_port="example set output" to_op="Join (6)" to_port="right"/>
       <connect from_op="Join (6)" from_port="join" to_op="Select Attributes (2)" to_port="example set input"/>
       <connect from_op="Select Attributes" from_port="example set output" to_op="Apply Model (2)" to_port="unlabelled data"/>
-      <connect from_op="Select Attributes (2)" from_port="example set output" to_op="Set Role" to_port="example set input"/>
+      <connect from_op="Select Attributes (2)" from_port="example set output" to_op="Numerical to Binominal" to_port="example set input"/>
+      <connect from_op="Numerical to Binominal" from_port="example set output" to_op="Set Role" to_port="example set input"/>
       <connect from_op="Set Role" from_port="example set output" to_op="Validation" to_port="example set"/>
       <connect from_op="Validation" from_port="model" to_op="Apply Model (2)" to_port="model"/>
       <connect from_op="Validation" from_port="test result set" to_port="result 2"/>

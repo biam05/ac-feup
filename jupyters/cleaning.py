@@ -4,41 +4,72 @@
 ### Library Imports
 import pandas as pd
 import numpy as np
+import sqlite3
 ### Script Imports
 import utils
 
+# %%
+def pd_account(con):
+    return pd.read_sql_query("SELECT * from account", con)
+
+def pd_card_test(con):
+    return pd.read_sql_query("SELECT * from card_test", con)
+
+def pd_card_train(con):
+    return pd.read_sql_query("SELECT * from card_train", con)
+
+def pd_client(con):
+    return pd.read_sql_query("SELECT * from client", con)
+
+def pd_disp(con):
+    return pd.read_sql_query("SELECT * from disp", con)
+
+def pd_district(con):
+    p = pd.read_sql_query("SELECT * from district", con)
+    return p.replace('?', None)
+
+def pd_loan_test(con):
+    return pd.read_sql_query("SELECT * from loan_test", con)
+
+def pd_loan_train(con):
+    return pd.read_sql_query("SELECT * from loan_train", con)
+
+def pd_trans_test(con):
+    return pd.read_sql_query("SELECT * from trans_test", con)
+
+def pd_trans_train(con):
+    return pd.read_sql_query("SELECT * from trans_train", con)
 
 # %%
 ### Clean Accounts
 
-def clean_account():
+def clean_account(con):
     
     ### Import the loans file
     na_values= ['None', '?',]
-    df = pd.read_csv('../banking_data/account.csv', sep=';',na_values=na_values)
+    df = pd_account(con)
     
     ### Date conversion
     return utils.date_conversion(df,'date')
 
 
 # %%
-def clean_card(test = False):
+def clean_card(con, test = False):
     ### Import the loans file
     na_values= ['None', '?',]
     if(test):
-        df = pd.read_csv('../banking_data/card_test.csv', sep=';',na_values=na_values)
+        df = pd_card_test(con)
     else:
-        df = pd.read_csv('../banking_data/card_train.csv', sep=';',na_values=na_values)
+        df = pd_card_train(con)
 
     return utils.date_conversion(df,'issued')
 
 
 # %%
-def clean_client():
+def clean_client(con):
     ### Import the clients file
     na_values= ['None', '?',]
-    df = pd.read_csv('../banking_data/client.csv', sep=';',na_values=na_values)
-    
+    df = pd_client(con)
 
     ### Date conversion with creation of gender column
     df = utils.date_conversion_genders(df,'birth_number')
@@ -50,22 +81,22 @@ def clean_client():
 
 
 # %%
-def clean_district():
+def clean_district(con):
     ### Import the loans file
-    na_values= ['None', '?',]
-    df = pd.read_csv('../banking_data/district.csv', sep=';',na_values=na_values)
+    df = pd_district(con)
+
 
     ### Replace null values in the '95 column for the ones on the '96 column
     districts = df.copy()
-    districts["no. of commited crimes \'95 "] = districts["no. of commited crimes \'95 "].combine_first(districts["no. of commited crimes \'96 "])
-    districts["unemploymant rate \'95 "] = districts["unemploymant rate \'95 "].combine_first(districts["unemploymant rate \'96 "])
+    districts["no. of commited crimes '95"] = districts["no. of commited crimes '95"].combine_first(districts["no. of commited crimes '96"])
+    districts["unemploymant rate '95"] = districts["unemploymant rate '95"].combine_first(districts["unemploymant rate '96"])
     
     ### Added columns for crime analysis
-    districts['crime_growth'] = districts["no. of commited crimes '96 "] - districts["no. of commited crimes '95 "]
-    districts['total_crime'] = districts["no. of commited crimes '96 "] + districts["no. of commited crimes '95 "]
+    districts['crime_growth'] = pd.to_numeric(districts["no. of commited crimes '96"]) - pd.to_numeric(districts["no. of commited crimes '95"])
+    districts['total_crime'] = pd.to_numeric(districts["no. of commited crimes '96"]) + pd.to_numeric(districts["no. of commited crimes '95"])
 
     ### Added column for uneployment growth analysis
-    districts['unemploymant_growth'] = districts["unemploymant rate '96 "] - districts["unemploymant rate '95 "]
+    districts['unemploymant_growth'] = pd.to_numeric(districts["unemploymant rate '96"]) - pd.to_numeric(districts["unemploymant rate '95"])
 
     ### Reorder columns
     cols = districts.columns.tolist()
@@ -76,27 +107,27 @@ def clean_district():
 
 
 # %%
-def clean_loans(test=False):
+def clean_loans(con, test=False):
     ### Import the loans file
     na_values= ['None', '?',]
     if(test):
-        df = pd.read_csv('../banking_data/loan_test.csv', sep=';',na_values=na_values)
+        df = pd_loan_test(con)
     else:
-        df = pd.read_csv('../banking_data/loan_train.csv', sep=';',na_values=na_values)
+        df = pd_loan_train(con)
     
     return utils.date_conversion(df,'date')
 
 
 # %%
-def clean_trans(test = False):
+def clean_trans(con ,test = False):
     ### Import the trans file
     
     na_values= ['None', '?',]
     
     if test:
-        df = pd.read_csv('../banking_data/trans_test.csv', sep=';',na_values=na_values)
+        df = pd_trans_test(con)
     else:
-        df = pd.read_csv('../banking_data/trans_train.csv', sep=';',na_values=na_values)
+        df = pd_trans_train(con)
     
 
 

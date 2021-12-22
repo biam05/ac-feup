@@ -69,7 +69,7 @@ def drop_null_rows(df,limit = 0.5):
 # %%
 
 ### Converts catergorical values to numerical
-def normalization(df,column):
+def category_encoding(df,column):
 
     copy = df.copy()
     encoder = preprocessing.LabelEncoder()
@@ -79,28 +79,20 @@ def normalization(df,column):
     return copy
 
 ### Applyes categorical normalization to all non int columns
-### TODO: Solve Problem with date colums not being converted 
-def normalize_category(df):
+def full_df_category_enconding(df):
     
     cp = df.copy()
     columns = cp.columns
     
     for column in columns:
-        if(cp[column].dtypes != 'int64' and cp[column].dtypes != 'float64' and  cp[column].dtypes != 'int32' and  cp[column].dtypes != 'float32'):
-            cp = normalization(cp,column)
+        if(cp[column].dtypes != 'int64'\
+        and cp[column].dtypes != 'float64'\
+        and  cp[column].dtypes != 'int32'\
+        and  cp[column].dtypes != 'float32'):
+            cp = category_encoding(cp,column)
     
     return cp
 
-def min_max_scaler(df):
-    cp = df.copy()
-    columns = cp.columns
-    
-    for column in columns:
-        if(cp[column].dtypes != 'int64' and cp[column].dtypes != 'float64' and  cp[column].dtypes != 'int32' and  cp[column].dtypes != 'float32'):
-            cp = normalization(cp,column)
-    
-    return cp
-    
 
 
 # %%
@@ -109,13 +101,11 @@ def remove_outliers_zscore(df,column,factor = 3):
     return df[(np.abs(stats.zscore(df[column])) < factor)]
 
 ### Outlier removel according to percentile
-def remove_outliers_zscore(df,column):
+def remove_outliers_percentile(df,column):
     lower_bound = df[column].quantile(.95)
     upper_bound = df[column].quantile(.05)
 
     return df[(df[column] > lower_bound) & (df[column] < upper_bound)]
-
-# def drop_outliers_std(df,column):
     
 
 # %%

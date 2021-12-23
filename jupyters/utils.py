@@ -1,11 +1,14 @@
 # %%
 ### Import Modules
 from datetime import datetime
-from sklearn import preprocessing
-from scipy import stats
 import numpy as np
-from sklearn import metrics
 import pandas as pd
+import matplotlib.pyplot as plt
+
+from scipy import stats
+from sklearn import preprocessing
+from sklearn import metrics
+
 
 # %%
 ### Convert numerical date to datetime formats
@@ -69,7 +72,7 @@ def drop_null_rows(df,limit = 0.5):
 # %%
 
 ### Converts catergorical values to numerical
-def normalization(df,column):
+def category_encoding(df,column):
 
     copy = df.copy()
     encoder = preprocessing.LabelEncoder()
@@ -79,28 +82,16 @@ def normalization(df,column):
     return copy
 
 ### Applyes categorical normalization to all non int columns
-### TODO: Solve Problem with date colums not being converted 
-def normalize_category(df):
+def full_category_encoding(df):
     
     cp = df.copy()
     columns = cp.columns
     
     for column in columns:
-        if(cp[column].dtypes != 'int64' and cp[column].dtypes != 'float64' and  cp[column].dtypes != 'int32' and  cp[column].dtypes != 'float32'):
-            cp = normalization(cp,column)
+        if(cp[column].dtypes != 'int64' and cp[column].dtypes != 'float64' and  cp[column].dtypes != 'int32' and  cp[column].dtypes != 'float32' and column != "status"):
+            cp = category_encoding(cp,column)
     
-    return cp
-
-def min_max_scaler(df):
-    cp = df.copy()
-    columns = cp.columns
-    
-    for column in columns:
-        if(cp[column].dtypes != 'int64' and cp[column].dtypes != 'float64' and  cp[column].dtypes != 'int32' and  cp[column].dtypes != 'float32'):
-            cp = normalization(cp,column)
-    
-    return cp
-    
+    return cp    
 
 
 # %%
@@ -122,5 +113,21 @@ def remove_outliers_zscore(df,column):
 def get_auc(y_test,y_predicted,label=-1):
     fpr, tpr, _ = metrics.roc_curve(pd.to_numeric(y_test), pd.to_numeric(y_predicted),pos_label=label)    
     return metrics.auc(fpr, tpr)
+
+def plot_auc(y_test,y_predicted):
+        
+    fpr, tpr, _ = metrics.roc_curve(y_test, y_predicted,pos_label=-1)
+    roc_auc = metrics.auc(fpr, tpr)
+    
+    plt.title('Receiver Operating Characteristic')
+    plt.plot(fpr, tpr, 'b', label = 'AUC = %0.2f' % roc_auc)
+    plt.fill_between(fpr,tpr,color="lightskyblue")
+    plt.legend(loc = 'lower right')
+    plt.plot([0, 1], [0, 1],'w--')
+    plt.xlim([0, 1])
+    plt.ylim([0, 1.01])
+    plt.ylabel('True Positive Rate')
+    plt.xlabel('False Positive Rate')
+    plt.show()
 
 
